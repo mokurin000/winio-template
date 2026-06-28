@@ -1,0 +1,65 @@
+name: nightly-release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "**.rs"
+      - ".cargo/config.toml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "android/**"
+    tags:
+      - v*
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  windows-10:
+    uses: ./.github/workflows/windows-10.yaml
+
+  windows-11:
+    uses: ./.github/workflows/windows-11.yaml
+
+  macos:
+    uses: ./.github/workflows/macos.yaml
+
+  linux-glibc:
+    uses: ./.github/workflows/linux-glibc.yaml
+
+  android:
+    uses: ./.github/workflows/android.yaml
+
+  release:
+    needs:
+      - windows-10
+      - windows-11
+      - macos
+      - linux-glibc
+      - android
+
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - id: date
+        run: |
+          echo "date=$(date -u +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          tag_name: nightly
+          name: Nightly ${{ steps.date.outputs.date }}
+          prerelease: true
+          files: artifacts/**/*
+          overwrite_files: true

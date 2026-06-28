@@ -1,0 +1,44 @@
+[package]
+name = "winio-program"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Error handling, logging
+color-eyre = "0.6.5"
+
+# GUI
+winio = { version = "0.12.0-rc.5", features = [
+    "win32-dark-mode",
+], default-features = false }
+
+[target.'cfg(target_os = "android")'.dependencies]
+# keep sync with winio
+android-activity = "0.6"
+
+[lib]
+# don't touch: used in android/app/src/java/MainActivity.java
+name = "main"
+
+[[bin]]
+path = "src/main.rs"
+# if you want to modify the released prefix in CI,
+# it's not nessacary to modify the bin name. you can always
+# just update your artifact names.
+name = "app"
+
+[features]
+default = ["winui", "qt"]
+
+gtk = ["winio/gtk"]
+qt = ["winio/qt"]
+
+win32 = ["winio/win32"]
+winui = ["winio/winui"]
+
+[profile.release]
+# we handle panic's via eyre
+panic = "abort"
+
+[profile.dev]
+debug = "limited"
