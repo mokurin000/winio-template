@@ -3,6 +3,11 @@ name = "winio-program"
 version = "0.1.0"
 edition = "2024"
 
+# See https://github.com/burtonageo/cargo-bundle/tree/master#general-settings
+# Useful for packaging macOS .app, Linux .deb or Windows .msi, e.g.
+[package.metadata.bundle]
+identifier = "io.github.mokurin000.example"
+
 [dependencies]
 # Error handling, logging
 color-eyre = "0.6.5"
