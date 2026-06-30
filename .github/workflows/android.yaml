@@ -52,9 +52,7 @@ jobs:
           ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/29.0.14206865
           ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/29.0.14206865
         run: |
-          mkdir -p .android
-
-          base64 -d > .android/key.properties <<EOF
+          base64 -d > android/key.keystore <<EOF
           ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           EOF
 
