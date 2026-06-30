@@ -2,6 +2,9 @@ name: build-android
 
 on:
   workflow_call:
+    secrets:
+      ANDROID_KEYSTORE_BASE64:
+        required: true
   workflow_dispatch:
 
 jobs:
