@@ -129,21 +129,28 @@ impl Component for MainModel {
     fn render(&mut self, _sender: &ComponentSender<Self>) -> Result<()> {
         let csize = self.window.client_size()?;
 
-        let mut buttons = layout! {
-            StackPanel::new(Orient::Horizontal),
+        let mut layout = layout! {
+            Grid::from_str("1*,2*,1*,2*,1*", "1*")?,
             self.countup => {
+                row: 0,
+                column: 1,
                 halign: HAlign::Center,
             },
+            self.label => {
+                row: 0,
+                column: 2,
+                halign: HAlign::Center,
+                valign: VAlign::Center,
+            },
             self.countdown => {
+                row: 0,
+                column: 3,
                 halign: HAlign::Center,
             },
         };
         let mut layout = layout! {
             StackPanel::new(Orient::Vertical),
-            self.label => {
-                halign: HAlign::Center,
-            },
-            buttons => {
+            layout => {
                 halign: HAlign::Center,
             },
         };
