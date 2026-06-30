@@ -1,7 +1,3 @@
 # Reduce binary size
 [build]
 rustflags = "-Z location-detail=none"
-
-# Enable rust-lld linker where available
-[target.'cfg(not(target_os = "android"))']
-linker = "rust-lld"
