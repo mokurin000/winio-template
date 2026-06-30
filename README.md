@@ -38,14 +38,10 @@ See [qrcode-gen@2939502](https://github.com/mokurin000/qrcode-gen/commit/2939502
 
 ### Android Signing Key
 
-A default Android signing key is included for convenience. Before publishing your application, you should replace it with your own private signing key.
-
-Update the `android.yaml` workflow to generate `key.properties` and restore the keystore file by decoding a Base64-encoded GitHub secret, e.g.
-
-If you're unfamiliar with Android app signing or GitHub Actions secrets, feel free to ask an AI assistant for help.
-
 To generate your own keystore, utilize keytool from Java Development Kit:
 
 ```bash
 keytool -genkey -alias testkey -keyalg RSA -keysize 2048 -validity 36500 -keystore mykey.keystore -storepass storepass
 ```
+
+You should update your ***Repository secret*** `ANDROID_KEYSTORE_BASE64` and `android/key.properties` accordingly.
