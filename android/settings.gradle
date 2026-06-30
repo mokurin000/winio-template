@@ -19,8 +19,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+
+        // Similarly, resolve the Maven package for
+        // `rustls-platform-verifier-android`
+        // if your application uses rustls and requires
+        // native platform certificate verification.
         maven {
-            url = findWinioUiAndroidProject()
+            url = findCargoPackageMaven("winio-ui-android")
             metadataSources.artifact()
         }
     }
@@ -31,13 +36,18 @@ include ':app'
 
 import groovy.json.JsonSlurper
 
-String findWinioUiAndroidProject() {
+String findCargoPackageMaven(String packageName) {
     def dependencyText = providers.exec {
         it.workingDir = new File("../")
         commandLine("cargo", "metadata", "--format-version", "1", "--manifest-path", "Cargo.toml")
     }.standardOutput.asText.get()
 
     def dependencyJson = new JsonSlurper().parseText(dependencyText)
-    def manifestPath = file(dependencyJson.packages.find { it.name == "winio-ui-android" }.manifest_path)
+    def pkg = dependencyJson.packages.find { it.name == packageName }
+    if (pkg == null) {
+        throw new GradleException("Cargo package '${packageName}' not found.")
+    }
+
+    def manifestPath = file(pkg.manifest_path)
     return new File(manifestPath.parentFile, "maven").path
 }
