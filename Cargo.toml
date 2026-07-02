@@ -15,6 +15,9 @@ color-eyre = "0.6.5"
 # GUI
 winio = { version = "0.12.0-rc.7", features = [
     "win32-dark-mode",
+    # The CBS 1.6 variant of winui3 was meant for windows system apps
+    # We don't assume users have installed winui3 through any apps
+    "winui-enable-cbs",
     # Enable this feature and uncomment `compio`
     # if you need to spawn I/O or CPU-bound tasks.
     # "compio-compat",
