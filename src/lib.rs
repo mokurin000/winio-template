@@ -1,4 +1,4 @@
-//! Root module of the QR code generator app.
+//! Root module of the app.
 
 pub mod model;
 
