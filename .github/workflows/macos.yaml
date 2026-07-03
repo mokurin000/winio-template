@@ -36,6 +36,7 @@ jobs:
         run: |
           cargo build \
             --release \
+            --features winio/objc-static \
             --target ${{ matrix.target }}
 
       - name: Collect
