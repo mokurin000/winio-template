@@ -1,3 +1,0 @@
-# Reduce binary size
-[build]
-rustflags = "-Z location-detail=none"
