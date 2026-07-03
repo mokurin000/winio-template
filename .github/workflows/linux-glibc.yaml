@@ -51,6 +51,8 @@ jobs:
         shell: bash
         env:
           CARGO_ZIGBUILD_TARGET: x86_64-unknown-linux-gnu.2.31
+          CXXFLAGS: "-flto"
+          RUSTFLAGS: "-Clink-arg=-flto"
         run: |
           cargo zigbuild \
             --release \
