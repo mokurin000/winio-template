@@ -55,6 +55,10 @@ winui = ["winio/winui"]
 [profile.release]
 # Panics are handled via `eyre`.
 panic = "abort"
+# Full binary optimization
+codegen-units = 1
+lto = true
+
 
 [profile.dev]
 debug = "limited"
