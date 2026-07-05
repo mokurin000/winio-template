@@ -24,7 +24,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@nightly
         with:
           targets: ${{ matrix.target }}
-          components: rust-src
 
       - name: Install Qt6
         run: |

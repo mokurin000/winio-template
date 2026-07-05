@@ -29,7 +29,6 @@ jobs:
             aarch64-linux-android
             armv7-linux-androideabi
             x86_64-linux-android
-          components: rust-src
 
       - name: 📦 Install cargo-ndk
         run: |
