@@ -6,8 +6,6 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.runner }}
-
     strategy:
       fail-fast: false
 
@@ -22,6 +20,7 @@ jobs:
             target: aarch64-pc-windows-msvc
 
     name: ${{ matrix.artifact }}
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - uses: actions/checkout@v6
