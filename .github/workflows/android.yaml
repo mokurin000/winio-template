@@ -11,7 +11,17 @@ jobs:
   build:
     runs-on: ubuntu-24.04
 
-    name: Android APKs
+    strategy:
+      matrix:
+        include:
+          - abi: arm64-v8a
+            target: aarch64-linux-android
+          - abi: armeabi-v7a
+            target: armv7-linux-androideabi
+          - abi: x86_64
+            target: x86_64-linux-android
+
+    name: Android ${{ matrix.abi }}
 
     steps:
       - uses: actions/checkout@v6
@@ -22,13 +32,10 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: 🦀 Setup Rust
+      - name: 🦀 Setup Rust (${{ matrix.abi }})
         uses: dtolnay/rust-toolchain@nightly
         with:
-          targets: |
-            aarch64-linux-android
-            armv7-linux-androideabi
-            x86_64-linux-android
+          targets: ${{ matrix.target }}
 
       - name: 📦 Install cargo-ndk
         run: |
@@ -38,21 +45,28 @@ jobs:
           mv cargo-ndk-x86_64-unknown-linux-gnu-v4.1.2/cargo-ndk ~/.cargo/bin/
           rm -rf cargo-ndk-x86_64-unknown-linux-gnu-v4.1.2*
 
+      - name: ♻️ Restore Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: app-android-${{ matrix.abi }}
+
+      - name: 🏗 Build .so (${{ matrix.abi }})
+        env:
+          ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/29.0.14206865
+          ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/29.0.14206865
+        run: |
+          cargo ndk -t ${{ matrix.abi }} -o android/app/src/main/jniLibs rustc --crate-type cdylib --lib --release
+
+      - name: 📝 Configure local.properties
+        run: |
+          echo "ndk.abis=${{ matrix.abi }}" > android/local.properties
+
       - name: 📦️ Setup gradle
         uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: "9.6.0"
 
-      - name: ♻️ Restore Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: app-android
-
-      - name: 🏗 Build APKs
-        env:
-          # See https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
-          ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk/29.0.14206865
-          ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/29.0.14206865
+      - name: 🏗 Build APK (${{ matrix.abi }})
         run: |
           base64 -d > android/key.keystore <<EOF
           ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -61,19 +75,14 @@ jobs:
           cd android
           gradle assembleRelease
 
-      - name: 📁 Collect split APKs
-        shell: bash
+      - name: 📁 Collect APK
         run: |
           mkdir -p dist
-          for apk in android/app/build/outputs/apk/release/app-*-release.apk; do
-            name=$(basename "$apk")
-            abi=$(echo "$name" | sed 's/^app-//;s/-release\.apk$//')
-            cp "$apk" "dist/app-android-${abi}.apk"
-          done
-          ls -lh dist
+          cp android/app/build/outputs/apk/release/app-${{ matrix.abi }}-release.apk dist/
+          ls -lh dist/
 
-      - name: 📤 Upload APKs
+      - name: 📤 Upload APK
         uses: actions/upload-artifact@v7
         with:
-          name: app-android-apks
-          path: dist/*
+          name: app-android-${{ matrix.abi }}
+          path: dist/

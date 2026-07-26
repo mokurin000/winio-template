@@ -72,38 +72,3 @@ dependencies {
 
     implementation libs.winio
 }
-
-[
-        Debug  : null,
-        Profile: '--release',
-        Release: '--release'
-].each {
-    def taskPostfix = it.key
-    def profileMode = it.value
-    tasks.configureEach { task ->
-        if (task.name == "assemble$taskPostfix") {
-            task.dependsOn "cargoBuild$taskPostfix"
-        }
-    }
-    tasks.register("cargoBuild$taskPostfix", Exec) {
-        workingDir "../.."
-        environment 'CARGO_TERM_COLOR', 'always'
-
-        def cmdArgs = [
-                'cargo', 'ndk',
-                '-o', 'android/app/src/main/jniLibs',
-        ]
-        abiList.each { abi ->
-            cmdArgs.addAll(['-t', abi])
-        }
-        cmdArgs.addAll([
-                'rustc',
-                '--crate-type', 'cdylib', '--lib',
-        ])
-        if (profileMode != null) {
-            cmdArgs.add(profileMode)
-        }
-
-        commandLine cmdArgs
-    }
-}
