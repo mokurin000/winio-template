@@ -13,11 +13,11 @@ jobs:
         include:
           - artifact: app-linux-x86_64
             target: x86_64-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
 
           - artifact: app-linux-aarch64
             target: aarch64-unknown-linux-gnu
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
 
     name: ${{ matrix.artifact }}
     runs-on: ${{ matrix.runner }}

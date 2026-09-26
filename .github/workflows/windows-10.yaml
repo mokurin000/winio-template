@@ -12,7 +12,7 @@ jobs:
       matrix:
         include:
           - artifact: app-win10-x86_64.exe
-            runner: windows-2022
+            runner: windows-2025
             target: x86_64-pc-windows-msvc
 
           - artifact: app-win10-arm64.exe
