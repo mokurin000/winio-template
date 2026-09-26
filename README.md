@@ -26,11 +26,11 @@ Also, check `android/gradle/libs.version.toml` and `android/settings.gradle` for
 
 ### Why `win10.exe`?
 
-Although the WinUI 3 backend is technically supported on Windows 10, it requires bundling additional framework DLLs and a small patch to `winio` to use the portable `MddAddPackageDependency` API for dependency resolution.[^1]
+Although the WinUI 3 backend is technically supported on Windows 10, it requires bundling additional framework DLLs.[^1]
 
 For simplicity, this template builds Windows 10 executables using the `win32` backend instead, with the Mica backdrop disabled.
 
-[^1]: https://github.com/compio-rs/winio/issues/116
+[^1]: https://github.com/compio-rs/winio#platform-support
 
 ### Rounded Corners
 
