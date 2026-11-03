@@ -31,7 +31,7 @@ jobs:
 
       - uses: taiki-e/install-action@v2
         with:
-          tool: cargo-ndk*
+          tool: cargo-ndk
 
       - name: ♻️ Restore Rust cache
         uses: Swatinem/rust-cache@v2
