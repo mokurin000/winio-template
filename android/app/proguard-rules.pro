@@ -34,3 +34,7 @@
 
 # Slider
 # -keep, includedescriptorclasses class com.google.android.material.slider.** { *; }
+
+# UpDownEdit
+# -keep, includedescriptorclasses class rs.compio.winio.NumberPicker { *; }
+
